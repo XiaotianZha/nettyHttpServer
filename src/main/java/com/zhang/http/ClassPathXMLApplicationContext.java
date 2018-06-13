@@ -42,7 +42,7 @@ public class ClassPathXMLApplicationContext {
             Set<Class<?>> classes = classSet(packageName);
             System.out.println(classes);
 
-            processAnnotation(classes,routers);
+            processAnnotation(classes, routers);
 
             System.out.println(routers);
 
@@ -79,7 +79,7 @@ public class ClassPathXMLApplicationContext {
     }
 
 
-    private  void addClass(Set<Class<?>> classSet, String packagePath, String packageName) {
+    private void addClass(Set<Class<?>> classSet, String packagePath, String packageName) {
 
         File[] files = new File(packagePath).listFiles(
                 f -> (f.isFile() && f.getName().endsWith(".class") || f.isDirectory())
@@ -106,7 +106,7 @@ public class ClassPathXMLApplicationContext {
         }
     }
 
-    private  void doAddClass(Set<Class<?>> classSet, String className) {
+    private void doAddClass(Set<Class<?>> classSet, String className) {
         try {
             Class<?> cls = Class.forName(className);
             classSet.add(cls);
@@ -115,25 +115,25 @@ public class ClassPathXMLApplicationContext {
         }
     }
 
-    private void processAnnotation(Set<Class<?>> classes,Map<String, Router> routers){
+    private void processAnnotation(Set<Class<?>> classes, Map<String, Router> routers) {
 
-        classes.forEach( clazz ->{
+        classes.forEach(clazz -> {
             boolean isController = clazz.isAnnotationPresent(Controller.class);
-            if (isController){
-                if (clazz.isAnnotationPresent(RequestMapping.class)){
+            if (isController) {
+                if (clazz.isAnnotationPresent(RequestMapping.class)) {
                     StrBuilder sb = new StrBuilder();
-                    RequestMapping root=clazz.getAnnotation(RequestMapping.class);
+                    RequestMapping root = clazz.getAnnotation(RequestMapping.class);
                     sb.append(root.value());
-                    Method[] methods=clazz.getDeclaredMethods();
-                    for (Method e:methods){
-                        RequestMapping leaf=e.getAnnotation(RequestMapping.class);
-                        if (null != leaf){
+                    Method[] methods = clazz.getDeclaredMethods();
+                    for (Method e : methods) {
+                        RequestMapping leaf = e.getAnnotation(RequestMapping.class);
+                        if (null != leaf) {
                             sb.append(leaf.value());
-                            routers.put(sb.toString(),new Router(clazz,e.getName()));
+                            routers.put(sb.toString(), new Router(clazz, e.getName()));
                         }
                     }
-                }else {
-                    System.err.println("not mapped controller "+clazz);
+                } else {
+                    System.err.println("not mapped controller " + clazz);
                 }
             }
         });
@@ -142,6 +142,6 @@ public class ClassPathXMLApplicationContext {
 
     public static void main(String[] args) {
         ClassPathXMLApplicationContext context = new ClassPathXMLApplicationContext("Package.xml");
-       context.getRouters();
+        context.getRouters();
     }
 }
