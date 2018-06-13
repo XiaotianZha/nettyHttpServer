@@ -1,7 +1,10 @@
 package com.zhang.http;
 
+import com.zhang.http.annotation.Controller;
+import com.zhang.http.annotation.RequestMapping;
 import com.zhang.http.model.Router;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -9,6 +12,7 @@ import org.dom4j.io.SAXReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
@@ -38,6 +42,9 @@ public class ClassPathXMLApplicationContext {
             Set<Class<?>> classes = classSet(packageName);
             System.out.println(classes);
 
+            processAnnotation(classes,routers);
+
+            System.out.println(routers);
 
         } catch (DocumentException e) {
             e.printStackTrace();
@@ -106,6 +113,31 @@ public class ClassPathXMLApplicationContext {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void processAnnotation(Set<Class<?>> classes,Map<String, Router> routers){
+
+        classes.forEach( clazz ->{
+            boolean isController = clazz.isAnnotationPresent(Controller.class);
+            if (isController){
+                if (clazz.isAnnotationPresent(RequestMapping.class)){
+                    StrBuilder sb = new StrBuilder();
+                    RequestMapping root=clazz.getAnnotation(RequestMapping.class);
+                    sb.append(root.value());
+                    Method[] methods=clazz.getDeclaredMethods();
+                    for (Method e:methods){
+                        RequestMapping leaf=e.getAnnotation(RequestMapping.class);
+                        if (null != leaf){
+                            sb.append(leaf.value());
+                            routers.put(sb.toString(),new Router(clazz,e.getName()));
+                        }
+                    }
+                }else {
+                    System.err.println("not mapped controller "+clazz);
+                }
+            }
+        });
+
     }
 
     public static void main(String[] args) {
