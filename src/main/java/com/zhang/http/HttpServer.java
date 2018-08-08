@@ -48,6 +48,10 @@ public class HttpServer {
         }
     }
 
+    public static void main(String[] args) throws Exception{
+        new HttpServer().init(8080);
+    }
+
 
 
 

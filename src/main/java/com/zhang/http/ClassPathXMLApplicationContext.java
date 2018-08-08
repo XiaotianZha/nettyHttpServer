@@ -140,8 +140,8 @@ public class ClassPathXMLApplicationContext {
 
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         ClassPathXMLApplicationContext context = new ClassPathXMLApplicationContext("Package.xml");
         context.getRouters();
-    }
+    }*/
 }

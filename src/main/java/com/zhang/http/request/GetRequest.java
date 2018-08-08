@@ -9,6 +9,8 @@ public class GetRequest {
 
     private Map<String,String> params = new HashMap<>();
 
+    private boolean isKeepAlive;
+
     public void setUri(String uri) {
         this.uri = uri;
     }
@@ -23,5 +25,13 @@ public class GetRequest {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public boolean isKeepAlive() {
+        return isKeepAlive;
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        isKeepAlive = keepAlive;
     }
 }
