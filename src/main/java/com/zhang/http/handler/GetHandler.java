@@ -1,11 +1,14 @@
 package com.zhang.http.handler;
 
+import com.zhang.http.ClassPathXMLApplicationContext;
 import com.zhang.http.exception.ResourcesNotFoundException;
 import com.zhang.http.request.GetRequest;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedNioFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +16,8 @@ import java.io.RandomAccessFile;
 import java.net.URL;
 
 public class GetHandler extends ChannelInboundHandlerAdapter {
+
+    private static Logger logger = LoggerFactory.getLogger(GetHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -43,7 +48,7 @@ public class GetHandler extends ChannelInboundHandlerAdapter {
                     future.addListener(ChannelFutureListener.CLOSE);
                 }
             }catch (IOException e){
-                System.out.println("file not found "+path);
+                logger.error("file not found "+path);
                 throw new ResourcesNotFoundException(path);
             }
         } else {

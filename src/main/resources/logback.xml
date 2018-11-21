@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <property name="LOG_HOME" value="../logs" />
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{1024} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="com.zhang.http" level="DEBUG">
+        <appender-ref ref="stdout" />
+    </logger>
+    <!--<root level ="INFO">
+        <appender-ref ref="stdout" />
+    </root>-->
+</configuration>

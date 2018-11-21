@@ -11,20 +11,24 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PostHandler extends ChannelInboundHandlerAdapter{
 
+    private static Logger logger = LoggerFactory.getLogger(PostHandler.class);
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("post handler");
+        logger.debug("post handler");
         if(msg instanceof PostRequest){
             PostRequest request =(PostRequest)msg;
             System.out.println(request.getRawStr());
             Map<String,String> params= this.processParam(request.getContentType(),request.getRawStr());
-            System.out.println("toMap: "+params);
+            logger.info("toMap: "+params);
             PostResponse<String> result = new PostResponse<>();
             result.setCode(200);
             result.setContent("success");

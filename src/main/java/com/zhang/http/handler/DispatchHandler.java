@@ -7,16 +7,16 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class DispatchHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
+    private static Logger logger = LoggerFactory.getLogger(DispatchHandler.class);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
@@ -31,7 +31,7 @@ public class DispatchHandler extends SimpleChannelInboundHandler<FullHttpRequest
         if (method.equals(HttpMethod.GET)) {
             GetRequest getRequest = new GetRequest();
 
-            System.out.println(rawUri);
+            logger.debug(rawUri);
 
             getRequest.setUri(uri);
             getRequest.setKeepAlive(keepAlive);
@@ -44,7 +44,7 @@ public class DispatchHandler extends SimpleChannelInboundHandler<FullHttpRequest
             ByteBuf jsonBuf = msg.content();
             String contentType=msg.headers().get(HttpHeaders.Names.CONTENT_TYPE);
 
-            System.out.println("content-type: "+contentType);
+            logger.debug("content-type: "+contentType);
             String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
             PostRequest post = new PostRequest();
             post.setContentType(contentType);

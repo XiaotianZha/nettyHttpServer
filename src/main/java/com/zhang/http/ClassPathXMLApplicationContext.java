@@ -2,6 +2,7 @@ package com.zhang.http;
 
 import com.zhang.http.annotation.Controller;
 import com.zhang.http.annotation.RequestMapping;
+import com.zhang.http.handler.PostHandler;
 import com.zhang.http.model.Router;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
@@ -9,6 +10,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +21,8 @@ import java.net.URLDecoder;
 import java.util.*;
 
 public class ClassPathXMLApplicationContext {
+
+    private static Logger logger = LoggerFactory.getLogger(ClassPathXMLApplicationContext.class);
 
     private final String resources;
 
@@ -40,15 +45,14 @@ public class ClassPathXMLApplicationContext {
             packageName = element.attributeValue("class");
 
             Set<Class<?>> classes = classSet(packageName);
-            System.out.println(classes);
+            logger.info("{}",classes);
 
             processAnnotation(classes, routers);
 
-            System.out.println(routers);
+            logger.info("{}",routers);
 
         } catch (DocumentException e) {
-            e.printStackTrace();
-            System.out.println("error in reading resources file....");
+            logger.error(e.getMessage(),e);
         }
         return routers;
     }
@@ -69,7 +73,7 @@ public class ClassPathXMLApplicationContext {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return classes;
     }
@@ -111,7 +115,7 @@ public class ClassPathXMLApplicationContext {
             Class<?> cls = Class.forName(className);
             classSet.add(cls);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 
@@ -133,7 +137,7 @@ public class ClassPathXMLApplicationContext {
                         }
                     }
                 } else {
-                    System.err.println("not mapped controller " + clazz);
+                   logger.error("not mapped controller " + clazz);
                 }
             }
         });
