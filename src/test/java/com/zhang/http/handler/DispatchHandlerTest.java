@@ -1,6 +1,8 @@
 package com.zhang.http.handler;
 
+import com.zhang.http.TestPojo;
 import com.zhang.http.request.GetRequest;
+import com.zhang.http.request.PostRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -52,5 +54,20 @@ public class DispatchHandlerTest {
 
         }
         assertEquals(2,paramsNum);
+    }
+
+    @Test
+    public void testChannelReadPost(){
+        String msg = "age=11&name=zhang";
+        ByteBuf buf = Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8);
+        FullHttpRequest request =
+                new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,"localhost:8080/index.html?user=1&pass=2",buf);
+        request.headers().set(HttpHeaders.Names.CONTENT_LENGTH,request.content().readableBytes());
+        EmbeddedChannel channel = new EmbeddedChannel(new DispatchHandler());
+        channel.writeInbound(request);
+
+        PostRequest post = (PostRequest) channel.readInbound();
+        assertEquals(post.getRawStr(),msg);
+
     }
 }

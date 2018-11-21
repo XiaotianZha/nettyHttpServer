@@ -16,6 +16,7 @@ public class GetHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("get Handler");
         if (msg instanceof GetRequest) {
             GetRequest getRequest = (GetRequest)msg;
             URL location =GetHandler.class.getProtectionDomain()
