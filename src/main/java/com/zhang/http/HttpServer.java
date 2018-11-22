@@ -2,7 +2,9 @@ package com.zhang.http;
 
 import com.zhang.http.handler.DispatchHandler;
 import com.zhang.http.handler.GetHandler;
+import com.zhang.http.handler.NotFoundHandler;
 import com.zhang.http.handler.PostHandler;
+import com.zhang.http.model.ApplicationContext;
 import com.zhang.http.model.Router;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -22,10 +24,11 @@ public class HttpServer {
 
     private  EventLoopGroup group = new NioEventLoopGroup();
 
-    public void init(int port) throws Exception{
+    private void init(int port) throws Exception{
         ClassPathXMLApplicationContext context = new ClassPathXMLApplicationContext("Package.xml");
         rouers = context.getRouters();
-
+        ApplicationContext context1 = new ApplicationContext(rouers);
+        ContextHolder holder = new ContextHolder(context1);
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(group)
@@ -38,7 +41,7 @@ public class HttpServer {
                             ch.pipeline().addLast(new DispatchHandler());
                             ch.pipeline().addLast(new GetHandler());
                             ch.pipeline().addLast(new PostHandler());
-
+                            ch.pipeline().addLast(new NotFoundHandler());
                         }
                     });
             ChannelFuture f= bootstrap.bind().sync();
@@ -46,6 +49,10 @@ public class HttpServer {
         }finally {
             group.shutdownGracefully().sync();
         }
+    }
+
+    public Map<String, Router> getRouers(){
+        return rouers;
     }
 
     public static void main(String[] args) throws Exception{

@@ -6,9 +6,24 @@ public class Router {
 
     private final String method;
 
-    public Router(Class<?> clazz, String method) {
+    private final Object instance;
+
+    public Router(Class<?> clazz, String method, Object instance) {
         this.clazz = clazz;
         this.method = method;
+        this.instance=instance;
+    }
+
+    public Class<?> getClazz() {
+        return clazz;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public Object getInstanse() {
+        return instance;
     }
 
     @Override

@@ -133,7 +133,13 @@ public class ClassPathXMLApplicationContext {
                         RequestMapping leaf = e.getAnnotation(RequestMapping.class);
                         if (null != leaf) {
                             sb.append(leaf.value());
-                            routers.put(sb.toString(), new Router(clazz, e.getName()));
+                            try {
+                                routers.put(sb.toString(), new Router(clazz, e.getName(),clazz.newInstance()));
+                            } catch (InstantiationException e1) {
+                                logger.error(e1.getMessage(),e1);
+                            } catch (IllegalAccessException e1) {
+                                logger.error(e1.getMessage(),e1);
+                            }
                         }
                     }
                 } else {
