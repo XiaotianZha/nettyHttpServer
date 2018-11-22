@@ -1,9 +1,11 @@
 package com.zhang.http.handler;
 
 import com.zhang.http.ContextHolder;
+import com.zhang.http.HttpRequestHolder;
 import com.zhang.http.model.ApplicationContext;
 import com.zhang.http.model.PostResponse;
 import com.zhang.http.model.Router;
+import com.zhang.http.request.HttPRequest;
 import com.zhang.http.request.PostRequest;
 import com.zhang.http.util.JsonUtil;
 import com.zhang.http.util.ParamUtil;
@@ -30,10 +32,15 @@ public class PostHandler extends ChannelInboundHandlerAdapter{
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.debug("post handler");
         if(msg instanceof PostRequest){
+            HttpRequestHolder.clear();
             PostRequest request =(PostRequest)msg;
             logger.info(request.getUri());
+            //handle request param
             Map<String,String> params= this.processParam(request.getContentType(),request.getRawStr());
+            com.zhang.http.request.HttPRequest httPRequest = new HttPRequest(params);
+            HttpRequestHolder.setHolder(httPRequest);
             logger.info("toMap: "+params);
+            //transfer to controller
             PostResponse<Object> result = this.transfer(request.getUri());
             HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
             ctx.write(response);

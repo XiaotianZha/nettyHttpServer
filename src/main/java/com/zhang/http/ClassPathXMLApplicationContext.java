@@ -125,13 +125,15 @@ public class ClassPathXMLApplicationContext {
             boolean isController = clazz.isAnnotationPresent(Controller.class);
             if (isController) {
                 if (clazz.isAnnotationPresent(RequestMapping.class)) {
-                    StrBuilder sb = new StrBuilder();
+//                    StrBuilder sb = new StrBuilder();
                     RequestMapping root = clazz.getAnnotation(RequestMapping.class);
-                    sb.append(root.value());
+                    String s=root.value();
                     Method[] methods = clazz.getDeclaredMethods();
                     for (Method e : methods) {
                         RequestMapping leaf = e.getAnnotation(RequestMapping.class);
                         if (null != leaf) {
+                            StrBuilder sb = new StrBuilder();
+                            sb.append(s);
                             sb.append(leaf.value());
                             try {
                                 routers.put(sb.toString(), new Router(clazz, e.getName(),clazz.newInstance()));

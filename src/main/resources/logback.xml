@@ -10,6 +10,9 @@
     <logger name="com.zhang.http" level="DEBUG">
         <appender-ref ref="stdout" />
     </logger>
+    <logger name="io.netty" level="info">
+        <appender-ref ref="stdout" />
+    </logger>
     <!--<root level ="INFO">
         <appender-ref ref="stdout" />
     </root>-->
